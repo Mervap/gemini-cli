@@ -253,6 +253,9 @@ describe('runNonInteractive', () => {
       [{ text: 'Test input' }],
       expect.any(AbortSignal),
       'prompt-id-1',
+      undefined,
+      false,
+      'Test input',
     );
     expect(getWrittenOutput()).toBe('Hello World\n');
     // Note: Telemetry shutdown is now handled in runExitCleanup() in cleanup.ts
@@ -323,6 +326,9 @@ describe('runNonInteractive', () => {
       [{ text: 'Tool response' }],
       expect.any(AbortSignal),
       'prompt-id-2',
+      undefined,
+      false,
+      undefined,
     );
     expect(getWrittenOutput()).toBe('Final answer\n');
   });
@@ -480,6 +486,9 @@ describe('runNonInteractive', () => {
       ],
       expect.any(AbortSignal),
       'prompt-id-3',
+      undefined,
+      false,
+      undefined,
     );
     expect(getWrittenOutput()).toBe('Sorry, let me try again.\n');
   });
@@ -619,6 +628,9 @@ describe('runNonInteractive', () => {
       processedParts,
       expect.any(AbortSignal),
       'prompt-id-7',
+      undefined,
+      false,
+      rawInput,
     );
 
     // 6. Assert the final output is correct
@@ -652,6 +664,9 @@ describe('runNonInteractive', () => {
       [{ text: 'Test input' }],
       expect.any(AbortSignal),
       'prompt-id-1',
+      undefined,
+      false,
+      'Test input',
     );
     expect(processStdoutSpy).toHaveBeenCalledWith(
       JSON.stringify(
@@ -782,6 +797,9 @@ describe('runNonInteractive', () => {
       [{ text: 'Empty response test' }],
       expect.any(AbortSignal),
       'prompt-id-empty',
+      undefined,
+      false,
+      'Empty response test',
     );
 
     // This should output JSON with empty response but include stats
@@ -916,6 +934,9 @@ describe('runNonInteractive', () => {
       [{ text: 'Prompt from command' }],
       expect.any(AbortSignal),
       'prompt-id-slash',
+      undefined,
+      false,
+      '/testcommand',
     );
 
     expect(getWrittenOutput()).toBe('Response from command\n');
@@ -959,6 +980,9 @@ describe('runNonInteractive', () => {
       [{ text: 'Slash command output' }],
       expect.any(AbortSignal),
       'prompt-id-slash',
+      undefined,
+      false,
+      '/help',
     );
     expect(getWrittenOutput()).toBe('Response to slash command\n');
     handleSlashCommandSpy.mockRestore();
@@ -1133,6 +1157,9 @@ describe('runNonInteractive', () => {
       [{ text: '/unknowncommand' }],
       expect.any(AbortSignal),
       'prompt-id-unknown',
+      undefined,
+      false,
+      '/unknowncommand',
     );
 
     expect(getWrittenOutput()).toBe('Response to unknown\n');

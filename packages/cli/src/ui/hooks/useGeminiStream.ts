@@ -1213,6 +1213,9 @@ export const useGeminiStream = (
                 queryToSend,
                 abortSignal,
                 prompt_id!,
+                undefined,
+                false,
+                query,
               );
               const processingStatus = await processGeminiStreamEvents(
                 stream,

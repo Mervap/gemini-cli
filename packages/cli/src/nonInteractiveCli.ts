@@ -293,6 +293,9 @@ export async function runNonInteractive({
           currentMessages[0]?.parts || [],
           abortController.signal,
           prompt_id,
+          undefined,
+          false,
+          turnCount === 1 ? input : undefined,
         );
 
         let responseText = '';
