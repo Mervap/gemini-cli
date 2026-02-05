@@ -284,6 +284,32 @@ describe('GeminiAgent', () => {
       }),
     ).rejects.toThrow('Session not found: unknown');
   });
+
+  it('should delegate setMode to session', async () => {
+    await agent.newSession({ cwd: '/tmp', mcpServers: [] });
+    const session = (
+      agent as unknown as { sessions: Map<string, Session> }
+    ).sessions.get('test-session-id');
+    if (!session) throw new Error('Session not found');
+    session.setMode = vi.fn().mockReturnValue({});
+
+    const result = await agent.setSessionMode({
+      sessionId: 'test-session-id',
+      modeId: 'plan',
+    });
+
+    expect(session.setMode).toHaveBeenCalledWith('plan');
+    expect(result).toEqual({});
+  });
+
+  it('should throw error when setting mode on non-existent session', async () => {
+    await expect(
+      agent.setSessionMode({
+        sessionId: 'unknown',
+        modeId: 'plan',
+      }),
+    ).rejects.toThrow('Session not found: unknown');
+  });
 });
 
 describe('Session', () => {
@@ -332,6 +358,7 @@ describe('Session', () => {
       getDebugMode: vi.fn().mockReturnValue(false),
       getMessageBus: vi.fn().mockReturnValue(mockMessageBus),
       setModel: vi.fn().mockReturnValue({}),
+      setApprovalMode: vi.fn(),
     } as unknown as Mocked<Config>;
     mockConnection = {
       sessionUpdate: vi.fn(),
@@ -805,5 +832,16 @@ describe('Session', () => {
   it('should set model on config', () => {
     session.setModel('gemini-2.5-flash');
     expect(mockConfig.setModel).toHaveBeenCalledWith('gemini-2.5-flash');
+  });
+
+  it('should set mode on config', () => {
+    session.setMode('plan');
+    expect(mockConfig.setApprovalMode).toHaveBeenCalledWith('plan');
+  });
+
+  it('should throw error for invalid mode', () => {
+    expect(() => session.setMode('invalid-mode')).toThrow(
+      'Invalid mode: invalid-mode',
+    );
   });
 });

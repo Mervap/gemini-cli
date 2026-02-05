@@ -34,6 +34,7 @@ import {
   startupProfiler,
   Kind,
   partListUnionToString,
+  ApprovalMode,
 } from '@google/gemini-cli-core';
 import * as acp from '@agentclientprotocol/sdk';
 import { AcpFileSystemService } from './fileSystemService.js';
@@ -332,6 +333,16 @@ export class GeminiAgent {
     }
     return session.setModel(params.modelId);
   }
+
+  async setSessionMode(
+    params: acp.SetSessionModeRequest,
+  ): Promise<acp.SetSessionModeResponse> {
+    const session = this.sessions.get(params.sessionId);
+    if (!session) {
+      throw new Error(`Session not found: ${params.sessionId}`);
+    }
+    return session.setMode(params.modeId);
+  }
 }
 
 export class Session {
@@ -355,6 +366,15 @@ export class Session {
 
   setModel(model: acp.ModelId): acp.SetSessionModelResponse {
     this.config.setModel(model);
+    return {};
+  }
+
+  setMode(modeId: acp.SessionModeId): acp.SetSessionModeResponse {
+    const mode = Object.values(ApprovalMode).find((m) => m === modeId);
+    if (!mode) {
+      throw new Error(`Invalid mode: ${modeId}`);
+    }
+    this.config.setApprovalMode(mode);
     return {};
   }
 
