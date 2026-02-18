@@ -1198,7 +1198,7 @@ function toToolCallContent(toolResult: ToolResult): acp.ToolCallContent | null {
       if ('fileName' in toolResult.returnDisplay) {
         return {
           type: 'diff',
-          path: toolResult.returnDisplay.fileName,
+          path: toolResult.returnDisplay.filePath,
           oldText: toolResult.returnDisplay.originalContent,
           newText: toolResult.returnDisplay.newContent,
         };
