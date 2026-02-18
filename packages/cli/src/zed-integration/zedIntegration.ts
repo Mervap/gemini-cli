@@ -743,7 +743,10 @@ export class Session {
         sessionUpdate: 'tool_call_update',
         toolCallId: callId,
         status: 'completed',
+        title: invocation.getDescription(),
         content: content ? [content] : [],
+        locations: invocation.toolLocations(),
+        kind: toAcpToolKind(tool.kind),
       });
 
       const durationMs = Date.now() - startTime;
@@ -805,6 +808,7 @@ export class Session {
         content: [
           { type: 'content', content: { type: 'text', text: error.message } },
         ],
+        kind: toAcpToolKind(tool.kind),
       });
 
       this.chat.recordCompletedToolCalls(this.config.getActiveModel(), [
@@ -1099,7 +1103,10 @@ export class Session {
           sessionUpdate: 'tool_call_update',
           toolCallId: callId,
           status: 'completed',
+          title: invocation.getDescription(),
           content: content ? [content] : [],
+          locations: invocation.toolLocations(),
+          kind: toAcpToolKind(readManyFilesTool.kind),
         });
         if (Array.isArray(result.llmContent)) {
           const fileContentRegex = /^--- (.*?) ---\n\n([\s\S]*?)\n\n$/;
@@ -1143,6 +1150,7 @@ export class Session {
               },
             },
           ],
+          kind: toAcpToolKind(readManyFilesTool.kind),
         });
 
         throw error;
